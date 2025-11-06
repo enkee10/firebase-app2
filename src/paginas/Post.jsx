@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react'
 import { db } from '../lib/firebase'
 import { collection, onSnapshot, query, addDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore'
+import { useAuth } from '../context/authContext'
 
 function Post() {
+
+  const {user} = useAuth()
   //Variable para guardar los post
   const [post, setPost] = useState([])
   const [texto, setTexto] = useState("")
@@ -97,7 +100,7 @@ function Post() {
           Guardar
         </button>
       </div>
-
+      {user ? (
       <ul className="space-y-3">
             {post.map((m) => {
               //funcion que comprueba que editId fue cargado
@@ -170,8 +173,11 @@ function Post() {
                 </li>
               );
             })}
-          </ul>
-
+          </ul>):
+          (
+            <div>deber loguearte</div>
+          )
+      }
     </div>
   )
 }

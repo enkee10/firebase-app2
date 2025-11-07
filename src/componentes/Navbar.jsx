@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
 import { ZonaUsuario } from "./ZonaUsuario";
+import { useAuth } from "../context/authContext";
 
 export default function Navbar({ onAbrirLogin }) {
+  const {user} = useAuth()
   return (
     <nav className="bg-gray-900 text-white p-4 flex justify-between items-center">
       {/* Menú de navegación */}
@@ -12,9 +14,12 @@ export default function Navbar({ onAbrirLogin }) {
         <li>
           <Link className="hover:text-yellow-300" to="/usuarios">Usuarios</Link>
         </li>
-        <li>
-          <Link className="hover:text-yellow-300" to="/post">Post</Link>
-        </li>
+        { user?
+          <li>
+            <Link className="hover:text-yellow-300" to="/post">Post</Link>
+          </li> :""
+        }
+
         <li>
           <Link className="hover:text-yellow-300" to="/productos">Productos</Link>
         </li>
@@ -23,7 +28,7 @@ export default function Navbar({ onAbrirLogin }) {
 
       {/* Zona del usuario alineada a la derecha */}
       <div className="flex items-center">
-        <ZonaUsuario onAbrirLogin={onAbrirLogin}/>
+        <ZonaUsuario onAbrirLogin={onAbrirLogin} />
       </div>
     </nav>
   );

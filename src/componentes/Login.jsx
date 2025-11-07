@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../context/authContext";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function Login({ onLoginExitoso, irARegistro }) {
     // Cargar Auth
@@ -25,6 +26,13 @@ export default function Login({ onLoginExitoso, irARegistro }) {
         }
     }, []);
 
+    //Variables de location y navigate
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    // viene de ProtectedRoute -> Navigate(... state: { from: "/post" })
+    const from = location.state?.from || "/";
+
     // hace el logueo con correo y contraseña
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -33,6 +41,8 @@ export default function Login({ onLoginExitoso, irARegistro }) {
 
         try {
             await login(email, password);
+            //Regrueza a la ubicacion deseada
+            navigate(from, { replace: true });
             // Aquí puedes navegar al dashboard
             onLoginExitoso();
 
@@ -65,6 +75,8 @@ export default function Login({ onLoginExitoso, irARegistro }) {
         setMensaje("");
         try {
             await loginWithGoogle();
+            //Regrueza a la ubicacion deseada
+            navigate(from, { replace: true });
             onLoginExitoso();
         } catch (err) {
             console.error(err);

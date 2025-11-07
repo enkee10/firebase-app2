@@ -1,11 +1,14 @@
+// src/components/Registro.jsx
 import { useState, useRef, useEffect } from "react";
 import { useAuth } from "../context/authContext";
 
 export default function Registro({ onRegistroExitoso, onLoginExitoso, irALogin }) {
-    //cargar Auth
+    // Cargar Auth
     const { register, loginWithGoogle } = useAuth();
 
     // Estados para el formulario
+    const [username, setUsername] = useState("");          // 🔹 CAMBIO
+    const [avatarFile, setAvatarFile] = useState(null);    // 🔹 CAMBIO
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
@@ -17,19 +20,27 @@ export default function Registro({ onRegistroExitoso, onLoginExitoso, irALogin }
     useEffect(() => {
         if (emailRef.current) {
             emailRef.current.focus();
-            // Opcional: seleccionar el texto si ya había algo escrito
             // emailRef.current.select();
         }
     }, []);
 
-    //Crea usuario con email and password
+    // Crear usuario con email and password
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
 
         try {
-            await register(email, password); // Llama a createUserWithEmailAndPassword
-            // Aquí podrías redirigir al dashboard o limpiar el formulario
+            await register(email, password, {
+                username,      // 🔹 CAMBIO
+                avatarFile,    // 🔹 CAMBIO
+            });
+
+            // Opcional: limpiar formulario
+            // setUsername("");
+            // setAvatarFile(null);
+            // setEmail("");
+            // setPassword("");
+
             if (onRegistroExitoso) onRegistroExitoso();
         } catch (err) {
             console.log(err);
@@ -37,7 +48,7 @@ export default function Registro({ onRegistroExitoso, onLoginExitoso, irALogin }
         }
     };
 
-    // Opcional: login con Google
+    // Login con Google
     const handleGoogle = async () => {
         setError("");
         try {
@@ -47,6 +58,12 @@ export default function Registro({ onRegistroExitoso, onLoginExitoso, irALogin }
             console.log(err);
             setError(traducirError(err.code));
         }
+    };
+
+    // Manejo del input file para avatar
+    const handleAvatarChange = (e) => {
+        const file = e.target.files?.[0];
+        setAvatarFile(file || null);  // 🔹 CAMBIO
     };
 
     // Función simple para traducir códigos de error de Firebase a mensajes en español
@@ -77,6 +94,39 @@ export default function Registro({ onRegistroExitoso, onLoginExitoso, irALogin }
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-4">
+                    {/* 🔹 Nombre de usuario */}
+                    <div>
+                        <label className="block text-sm font-medium mb-1">
+                            Nombre de usuario
+                        </label>
+                        <input
+                            type="text"
+                            className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            placeholder="Ej: enrique48"
+                            required
+                            autoComplete="off"
+                        />
+                    </div>
+
+                    {/* 🔹 Avatar (archivo) */}
+                    <div>
+                        <label className="block text-sm font-medium mb-1">
+                            Avatar (imagen)
+                        </label>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleAvatarChange}
+                            className="w-full text-sm"
+                        />
+                        <p className="text-xs text-slate-500 mt-1">
+                            La imagen se subirá a Firebase Storage en la carpeta <code>usuario/</code>.
+                        </p>
+                    </div>
+
+                    {/* Correo */}
                     <div>
                         <label className="block text-sm font-medium mb-1">
                             Correo electrónico
@@ -93,6 +143,7 @@ export default function Registro({ onRegistroExitoso, onLoginExitoso, irALogin }
                         />
                     </div>
 
+                    {/* Contraseña */}
                     <div>
                         <label className="block text-sm font-medium mb-1">
                             Contraseña
@@ -108,20 +159,23 @@ export default function Registro({ onRegistroExitoso, onLoginExitoso, irALogin }
                         />
                     </div>
 
-                    <button
-                        type="submit"
-                        className="w-36 bg-blue-600 mr-3 hover:bg-blue-700 text-white font-medium py-2 rounded-lg transition"
-                    >
-                        Registrarse
-                    </button>
+                    <div className="flex gap-3 mt-4">
+                        <button
+                            type="submit"
+                            className="w-36 bg-blue-600 mr-3 hover:bg-blue-700 text-white font-medium py-2 rounded-lg transition"
+                        >
+                            Registrarse
+                        </button>
 
-                    <button
-                        type="submit"
-                        onClick={irALogin}
-                        className="w-36 bg-green-600 hover:bg-green-700 text-white font-medium py-2 rounded-lg transition"
-                    >
-                        Iniciar sesión
-                    </button>
+                        {/* 🔹 Importante: que NO sea submit */}
+                        <button
+                            type="button"
+                            onClick={irALogin}
+                            className="w-36 bg-green-600 hover:bg-green-700 text-white font-medium py-2 rounded-lg transition"
+                        >
+                            Iniciar sesión
+                        </button>
+                    </div>
                 </form>
 
                 <div className="mt-4">
@@ -135,5 +189,5 @@ export default function Registro({ onRegistroExitoso, onLoginExitoso, irALogin }
                 </div>
             </div>
         </div>
-    )
+    );
 }

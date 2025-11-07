@@ -18,6 +18,7 @@ export default function Navbar({ onAbrirLogin }) {
         <li>
           <Link className="hover:text-yellow-300" to="/productos">Productos</Link>
         </li>
+
       </ul>
 
       {/* Zona del usuario alineada a la derecha */}

@@ -63,6 +63,7 @@ function App() {
         <Modal onClose={cerrarRegistro}>
           <Registro
             onRegistroExitoso={manejarRegistroExitoso}
+            onLoginExitoso={cerrarRegistro}
             irALogin={() => {
               cerrarRegistro();
               abrirLogin();

@@ -10,12 +10,12 @@ export function ZonaUsuario({ onAbrirLogin }){
     return (
       <div className="flex items-center gap-3">
         <div className="flex flex-col items-end text-right leading-tight">
-          <span className="text-sm text-slate-700 font-medium">
+          <span className="text-sm text-white font-medium">
             {user.displayName || user.email}
           </span>
           <button
             onClick={logout}
-            className="text-xs text-blue-600 hover:underline"
+            className="text-xs text-blue-300 hover:underline"
           >
             Cerrar sesión
           </button>

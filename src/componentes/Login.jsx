@@ -1,18 +1,31 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../context/authContext";
 
-export default function Login({ onLoginExitoso }) {
-    //Cargar Auth
+export default function Login({ onLoginExitoso, irARegistro }) {
+    // Cargar Auth
     const { login, resetPassword, loginWithGoogle } = useAuth();
-    //Estados para manejo de formulario
+
+    // Estados para manejo de formulario
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    //Estados para el manejo mensajes de errores
+    // Estados para el manejo mensajes de errores
     const [mensaje, setMensaje] = useState("");
     const [error, setError] = useState("");
 
-    //hace el logueo con correo y contraseña
+    // 👉 Referencia al input de correo
+    const emailRef = useRef(null);
+
+    // 👉 Enfocar el input cuando se monta el componente (cuando se abre el modal)
+    useEffect(() => {
+        if (emailRef.current) {
+            emailRef.current.focus();
+            // Opcional: seleccionar el texto si ya había algo escrito
+            // emailRef.current.select();
+        }
+    }, []);
+
+    // hace el logueo con correo y contraseña
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
@@ -29,7 +42,7 @@ export default function Login({ onLoginExitoso }) {
         }
     };
 
-    //Resetear Contraseña
+    // Resetear Contraseña
     const handleReset = async () => {
         setError("");
         setMensaje("");
@@ -46,7 +59,7 @@ export default function Login({ onLoginExitoso }) {
         }
     };
 
-    //Iniciar Sesion con Google
+    // Iniciar Sesion con Google
     const handleGoogle = async () => {
         setError("");
         setMensaje("");
@@ -59,7 +72,7 @@ export default function Login({ onLoginExitoso }) {
         }
     };
 
-    //Traducir Error
+    // Traducir Error
     function traducirError(code) {
         switch (code) {
             case "auth/invalid-credential":
@@ -75,8 +88,8 @@ export default function Login({ onLoginExitoso }) {
     }
 
     return (
-        <div className=" flex items-center justify-center bg-slate-100">
-            <div className="w-full max-w-md bg-white shadow-lg rounded-xl p-1">
+        <div className="flex items-center justify-center bg-slate-100">
+            <div className="w-full max-w-md bg-white shadow-lg rounded-xl p-6">
                 <h1 className="text-2xl font-bold mb-4 text-center">
                     Iniciar sesión
                 </h1>
@@ -99,12 +112,14 @@ export default function Login({ onLoginExitoso }) {
                             Correo electrónico
                         </label>
                         <input
+                            ref={emailRef} // 👈 Aquí ponemos la referencia
                             type="email"
                             className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder="tucorreo@ejemplo.com"
                             required
+                            autoComplete="off"
                         />
                     </div>
 
@@ -119,14 +134,22 @@ export default function Login({ onLoginExitoso }) {
                             onChange={(e) => setPassword(e.target.value)}
                             placeholder="Tu contraseña"
                             required
+                            autoComplete="new-password"
                         />
                     </div>
 
                     <button
                         type="submit"
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg transition"
+                        className="w-24 mr-3 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg transition"
                     >
                         Entrar
+                    </button>
+                    <button
+                        type="button"
+                        onClick={irARegistro}
+                        className=" w-24 bg-green-600 hover:bg-green-700 text-white font-medium py-2 rounded-lg transition"
+                    >
+                        Registrate
                     </button>
                 </form>
 
@@ -149,5 +172,5 @@ export default function Login({ onLoginExitoso }) {
                 </div>
             </div>
         </div>
-    )
+    );
 }

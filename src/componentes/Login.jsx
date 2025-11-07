@@ -21,7 +21,7 @@ export default function Login({ onLoginExitoso }) {
         try {
             await login(email, password);
             // Aquí puedes navegar al dashboard
-            if (onLoginExitoso) onLoginExitoso();
+            onLoginExitoso();
 
         } catch (err) {
             console.error(err);
@@ -52,6 +52,7 @@ export default function Login({ onLoginExitoso }) {
         setMensaje("");
         try {
             await loginWithGoogle();
+            onLoginExitoso();
         } catch (err) {
             console.error(err);
             setError(traducirError(err.code));
@@ -74,8 +75,8 @@ export default function Login({ onLoginExitoso }) {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-slate-100">
-            <div className="w-full max-w-md bg-white shadow-lg rounded-xl p-6">
+        <div className=" flex items-center justify-center bg-slate-100">
+            <div className="w-full max-w-md bg-white shadow-lg rounded-xl p-1">
                 <h1 className="text-2xl font-bold mb-4 text-center">
                     Iniciar sesión
                 </h1>
